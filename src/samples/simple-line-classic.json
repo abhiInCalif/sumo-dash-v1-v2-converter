@@ -1,0 +1,36 @@
+{
+    "type": "DashboardSyncDefinition",
+    "name": "Simple Dash classic",
+    "description": "",
+    "detailLevel": 0,
+    "properties": "{\"layoutType\":\"gridster\"}",
+    "panels": [
+        {
+            "name": "Untitled",
+            "viewerType": "line",
+            "detailLevel": 0,
+            "queryString": "error | timeslice 1m | count by _timeslice",
+            "metricsQueries": [],
+            "timeRange": {
+                "type": "BeginBoundedTimeRange",
+                "from": {
+                    "type": "EpochTimeRangeBoundary",
+                    "epochMillis": 1597023926862
+                },
+                "to": {
+                    "type": "EpochTimeRangeBoundary",
+                    "epochMillis": 1597024826862
+                }
+            },
+            "x": 1,
+            "y": 1,
+            "width": 8,
+            "height": 5,
+            "properties": "{\"settings\":{\"line\":{\"chartType\":\"line\",\"version\":2,\"configuration\":{\"legend\":{\"position\":\"bottom\",\"enabled\":true},\"xAxis\":{\"title\":\"\",\"label\":{\"truncationMode\":\"middle\"},\"minorTickInterval\":null},\"yAxis\":[{\"title\":\"_count\",\"logScale\":false,\"min\":null,\"max\":null,\"bands\":null,\"minorTickInterval\":null}],\"seriesInfo\":{\"_count\":{\"yAxis\":0,\"color\":\"#8BE2FF\"}}}},\"area\":{\"chartType\":\"area\",\"version\":2,\"configuration\":{\"legend\":{\"position\":\"bottom\",\"enabled\":true},\"xAxis\":{\"title\":\"\",\"label\":{\"truncationMode\":\"middle\"},\"minorTickInterval\":null},\"yAxis\":[{\"title\":\"_count\",\"logScale\":false,\"min\":null,\"max\":null,\"bands\":null,\"minorTickInterval\":null}],\"seriesInfo\":{\"_count\":{\"yAxis\":0,\"color\":\"#8BE2FF\"}}}},\"bar\":{\"chartType\":\"bar\",\"version\":2,\"configuration\":{\"legend\":{\"position\":\"bottom\",\"enabled\":true},\"xAxis\":{\"title\":\"\",\"label\":{\"truncationMode\":\"middle\"},\"minorTickInterval\":null},\"yAxis\":[{\"title\":\"_count\",\"logScale\":false,\"min\":null,\"max\":null,\"bands\":null,\"minorTickInterval\":null}],\"seriesInfo\":{\"_count\":{\"yAxis\":0,\"color\":\"#8BE2FF\"}}}},\"column\":{\"chartType\":\"column\",\"version\":2,\"configuration\":{\"legend\":{\"position\":\"bottom\",\"enabled\":true},\"xAxis\":{\"title\":\"\",\"label\":{\"truncationMode\":\"middle\"},\"minorTickInterval\":null},\"yAxis\":[{\"title\":\"_count\",\"logScale\":false,\"min\":null,\"max\":null,\"bands\":null,\"minorTickInterval\":null}],\"seriesInfo\":{\"_count\":{\"yAxis\":0,\"color\":\"#8BE2FF\"}}}},\"pie\":{\"chartType\":\"pie\",\"version\":2,\"configuration\":{\"legend\":{\"position\":\"bottom\",\"enabled\":true},\"xAxis\":{\"title\":\"\",\"label\":{\"truncationMode\":\"middle\"},\"minorTickInterval\":null},\"yAxis\":[{\"title\":\"_count\",\"logScale\":false,\"min\":null,\"max\":null,\"bands\":null,\"minorTickInterval\":null}],\"seriesInfo\":{\"_count\":{\"yAxis\":0,\"color\":\"#8BE2FF\"}}}},\"table\":{\"chartType\":\"table\",\"version\":2,\"configuration\":{\"legend\":{\"position\":\"bottom\",\"enabled\":true},\"xAxis\":{\"title\":\"\",\"label\":{\"truncationMode\":\"middle\"},\"minorTickInterval\":null},\"yAxis\":[{\"title\":\"_count\",\"logScale\":false,\"min\":null,\"max\":null,\"bands\":null,\"minorTickInterval\":null}],\"seriesInfo\":{\"_count\":{\"yAxis\":0,\"color\":\"#8BE2FF\"}}}},\"map\":{\"chartType\":\"map\",\"version\":2,\"configuration\":{\"legend\":{\"position\":\"bottom\",\"enabled\":true},\"xAxis\":{\"title\":\"\",\"label\":{\"truncationMode\":\"middle\"},\"minorTickInterval\":null},\"yAxis\":[{\"title\":\"_count\",\"logScale\":false,\"min\":null,\"max\":null,\"bands\":null,\"minorTickInterval\":null}],\"seriesInfo\":{\"_count\":{\"yAxis\":0,\"color\":\"#8BE2FF\"}}}}}}",
+            "id": "8406110",
+            "desiredQuantizationInSecs": 0,
+            "queryParameters": []
+        }
+    ],
+    "filters": []
+}
