@@ -62,7 +62,7 @@ interface DashboardV2Panels {
     panelType: "SumoSearchPanel" | String,
     queries: Query[],
     description: String,
-    timeRange: TimeRange,
+    timeRange?: TimeRange,
     coloringRules: null,
     linkedDashboards: []
 }
@@ -114,19 +114,29 @@ const buildLayout = (classic: DashboardV1): LayoutUnit[] => {
     })
 }
 
-const getPanelType = (chartType: String, queryString: String, metricsQueries: String[]): String => {
+const getPanelTypeForMode = (chartType: String, queryString: String, metricsQueries: String[]): String => {
     if (queryString && queryString.includes("timeslice")) {
         return "timeSeries";
     } else if (metricsQueries.length > 0) {
         return "timeSeries";
+    } else if (chartType == "text") {
+        return "TextPanel";
     } else {
         return "distribution";
     }
 }
 
+const getPanelType = (classicPanel: ClassicPanel): String => {
+    if (classicPanel.viewerType == "text") {
+        return "TextPanel";
+    } else {
+        return "SumoSearchPanel";
+    }
+}
+
 const buildVisualSettings = (panel: ClassicPanel): String => {
     const chartType = panel.viewerType;
-    const panelType = getPanelType(chartType, panel.queryString, panel.metricsQueries);
+    const panelType = getPanelTypeForMode(chartType, panel.queryString, panel.metricsQueries);
     return `{\"general\":{\"mode\":\"${panelType}\",\"type\":\"${chartType}\"}}`;
 }
 
@@ -155,31 +165,54 @@ const buildQueries = (panel: ClassicPanel): Query[] => {
     }
 }
 
-const buildTimeRange = (panel: ClassicPanel): TimeRange => {
-    return {
-        type: "BeginBoundedTimeRange",
-        from: {
-            type: "RelativeTimeRangeBoundary",
-            relativeTime: "-15m"
-        },
-        to: null
+const buildTimeRange = (panel: ClassicPanel): TimeRange | null => {
+    if (panel.timeRange != null && panel.viewerType != "text") {
+        // todo: actually translate the old timerange please.
+        return {
+            type: "BeginBoundedTimeRange",
+            from: {
+                type: "RelativeTimeRangeBoundary",
+                relativeTime: "-15m"
+            },
+            to: null
+        }
     }
+
+    return null;
 }
 
 const buildPanels = (classic: DashboardV1): DashboardV2Panels[] => {
     return classic.panels.map((panel, idx) => {
-        return {
-            id: idx.toString(),
-            key: idx.toString(),
-            title: panel.name,
-            visualSettings: buildVisualSettings(panel),
-            keepVisualSettingsConsistentWithParent: true,
-            panelType: "SumoSearchPanel",
-            queries: buildQueries(panel),
-            description: "",
-            timeRange: buildTimeRange(panel),
-            coloringRules: null,
-            linkedDashboards: []
+        const timeRange = buildTimeRange(panel);
+        if (timeRange != null) {
+            return {
+                id: idx.toString(),
+                key: idx.toString(),
+                title: panel.name,
+                visualSettings: buildVisualSettings(panel),
+                keepVisualSettingsConsistentWithParent: true,
+                panelType: getPanelType(panel),
+                queries: buildQueries(panel),
+                description: "",
+                timeRange,
+                coloringRules: null,
+                linkedDashboards: []
+            };
+        } else {
+            return {
+                id: idx.toString(),
+                key: idx.toString(),
+                title: panel.name,
+                visualSettings: buildVisualSettings(panel),
+                keepVisualSettingsConsistentWithParent: true,
+                panelType: getPanelType(panel),
+                queries: buildQueries(panel),
+                text: "Simple Text Panel",
+                description: "",
+                coloringRules: null,
+                linkedDashboards: []
+            };
+
         }
     });
 }
@@ -208,5 +241,5 @@ const convert = (classic: DashboardV1): DashboardV2 => {
     return dash;
 }
 
-export { convert }
+export { convert, DashboardV1 }
 

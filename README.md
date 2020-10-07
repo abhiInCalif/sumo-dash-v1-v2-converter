@@ -7,3 +7,6 @@ I've been following a TDD (test-driven-development) structure to this repo. In o
 To setup this repo, you just need to check out the code base and run `yarn` in the root directory. If you do not have `yarn` installed on your computer and you are running a mac, you can get `yarn` by running `brew install yarn` (https://classic.yarnpkg.com/en/docs/install/#mac-stable). Once you have `yarn` you can just run `yarn` in the root and you should have all the dependencies.
 
 To run the project, run `yarn run run`. To run the tests run `yarn run test`
+
+## Running against Classic Dashboard JSONs
+If you want to convert a dashboard from classic to dashboard (new), run `yarn convert <filePath>`. `filePath` should a classic dashboard json.  It will spit out the new dashboard json assuming the underlying support code has been written.

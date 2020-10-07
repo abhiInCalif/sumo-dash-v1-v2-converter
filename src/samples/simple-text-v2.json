@@ -1,0 +1,46 @@
+{
+    "type": "DashboardV2SyncDefinition",
+    "name": "Simple Text Dashboard",
+    "description": "",
+    "title": "Simple Text Dashboard",
+    "rootPanel": null,
+    "theme": "Light",
+    "topologyLabelMap": {
+        "data": {}
+    },
+    "refreshInterval": 0,
+    "timeRange": {
+        "type": "BeginBoundedTimeRange",
+        "from": {
+            "type": "RelativeTimeRangeBoundary",
+            "relativeTime": "-15m"
+        },
+        "to": null
+    },
+    "layout": {
+        "layoutType": "Grid",
+        "layoutStructures": [
+            {
+                "key": "0",
+                "structure": "{\"height\":6,\"width\":12,\"x\":0,\"y\":0,\"minHeight\":3,\"minWidth\":3}"
+            }
+        ]
+    },
+    "panels": [
+        {
+            "id": "0",
+            "key": "0",
+            "title": "Simple Text Panel",
+            "visualSettings": "{\"general\":{\"mode\":\"TextPanel\",\"type\":\"text\"}}",
+            "keepVisualSettingsConsistentWithParent": true,
+            "panelType": "TextPanel",
+            "text": "Simple Text Panel",
+            "coloringRules": null,
+            "description": "",
+            "linkedDashboards": [],
+            "queries": []
+        }
+    ],
+    "variables": [],
+    "coloringRules": []
+}
