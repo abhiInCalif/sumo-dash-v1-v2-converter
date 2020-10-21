@@ -99,17 +99,19 @@ const getDefaultTimeRange = (): TimeRange => {
     };
 }
 
-const buildStructure = (idx: number): String => {
-    const xPos = idx % 3;
-    const yPos = idx / 3;
-    return `{\"height\":${defaultHeight},\"width\":${defaultWidth},\"x\":${xPos * defaultWidth},\"y\":${yPos * defaultHeight},\"minHeight\":3,\"minWidth\":3}`
+const buildStructure = (idx: number, panel: ClassicPanel): String => {
+    const xPos = panel.x;
+    const yPos = panel.y;
+    const classicPanelHeight = panel.height;
+    const classicPanelWidth = panel.width;
+    return `{\"height\":${classicPanelHeight},\"width\":${classicPanelWidth},\"x\":${xPos},\"y\":${yPos},\"minHeight\":3,\"minWidth\":3}`
 }
 
 const buildLayout = (classic: DashboardV1): LayoutUnit[] => {
     return classic.panels.map((panel, idx) => {
         return {
             key: idx.toString(),
-            structure: buildStructure(idx)
+            structure: buildStructure(idx, panel)
         }
     })
 }
