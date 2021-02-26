@@ -99,17 +99,15 @@ const getDefaultTimeRange = (): TimeRange => {
     };
 }
 
-const buildStructure = (idx: number): String => {
-    const xPos = idx % 3;
-    const yPos = idx / 3;
-    return `{\"height\":${defaultHeight},\"width\":${defaultWidth},\"x\":${xPos * defaultWidth},\"y\":${yPos * defaultHeight},\"minHeight\":3,\"minWidth\":3}`
+const buildStructure = (classicPanel: ClassicPanel): String => {
+    return `{\"height\":${classicPanel.height},\"width\":${classicPanel.width},\"x\":${classicPanel.x.valueOf() - 1},\"y\":${classicPanel.y.valueOf() - 1}}`
 }
 
 const buildLayout = (classic: DashboardV1): LayoutUnit[] => {
     return classic.panels.map((panel, idx) => {
         return {
-            key: idx.toString(),
-            structure: buildStructure(idx)
+            key: getKey(idx),
+            structure: buildStructure(panel)
         }
     })
 }
@@ -119,7 +117,7 @@ const getPanelTypeForMode = (chartType: String, queryString: String, metricsQuer
         return "timeSeries";
     } else if (metricsQueries.length > 0) {
         return "timeSeries";
-    } else if (chartType == "text") {
+    } else if (isTitleorTextPanel(chartType)) {
         return "TextPanel";
     } else {
         return "distribution";
@@ -127,17 +125,34 @@ const getPanelTypeForMode = (chartType: String, queryString: String, metricsQuer
 }
 
 const getPanelType = (classicPanel: ClassicPanel): String => {
-    if (classicPanel.viewerType == "text") {
+    if (isTitleorTextPanel(classicPanel.viewerType)) {
         return "TextPanel";
     } else {
         return "SumoSearchPanel";
     }
 }
 
+const getChartType = (viewerType: String): String => {
+    if (isTitleorTextPanel(viewerType)) {
+        return "text";
+    } else {
+        return viewerType;
+    }
+}
+
+const getTitleFontSize = (viewerType: String): String => {
+    if (viewerType == "title") {
+        return "\"fontSize\": 20 ";
+    } else {
+        return "\"fontSize\": 16 ";
+    }
+}
+
 const buildVisualSettings = (panel: ClassicPanel): String => {
-    const chartType = panel.viewerType;
+    const chartType = getChartType(panel.viewerType);
     const panelType = getPanelTypeForMode(chartType, panel.queryString, panel.metricsQueries);
-    return `{\"general\":{\"mode\":\"${panelType}\",\"type\":\"${chartType}\"}}`;
+    const titleFontSize = getTitleFontSize(panel.viewerType)
+    return `{\"title\": {${titleFontSize}}, \"general\": {\"mode\":\"${panelType}\",\"type\":\"${chartType}\", \"displayType\": \"default\", \"outlierBandColor\": \"#FDECF5\", \"outlierBandMarkerColor\": \"#F032A9\", \"outlierBandFillOpacity\": 0.3, \"outlierBandLineThickness\": 2, \"outlierBandMarkerSize\": 10, \"outlierBandMarkerType\": \"triangle\", \"fillOpacity\": 1, \"aggregationType\": \"average\", \"groupBy\": [] }, \"axes\": {}, \"legend\": {}, \"color\": {}, \"hiddenQueryKeys\": [], \"overrides\": [], \"series\": {}}`;
 }
 
 const buildQueries = (panel: ClassicPanel): Query[] => {
@@ -166,16 +181,8 @@ const buildQueries = (panel: ClassicPanel): Query[] => {
 }
 
 const buildTimeRange = (panel: ClassicPanel): TimeRange | null => {
-    if (panel.timeRange != null && panel.viewerType != "text") {
-        // todo: actually translate the old timerange please.
-        return {
-            type: "BeginBoundedTimeRange",
-            from: {
-                type: "RelativeTimeRangeBoundary",
-                relativeTime: "-15m"
-            },
-            to: null
-        }
+    if (panel.timeRange != null && !isTitleorTextPanel(panel.viewerType)) {
+        return panel.timeRange
     }
 
     return null;
@@ -184,10 +191,10 @@ const buildTimeRange = (panel: ClassicPanel): TimeRange | null => {
 const buildPanels = (classic: DashboardV1): DashboardV2Panels[] => {
     return classic.panels.map((panel, idx) => {
         const timeRange = buildTimeRange(panel);
-        if (timeRange != null) {
+        if (timeRange != null && !isTitleorTextPanel(panel.viewerType)) {
             return {
                 id: idx.toString(),
-                key: idx.toString(),
+                key: getKey(idx),
                 title: panel.name,
                 visualSettings: buildVisualSettings(panel),
                 keepVisualSettingsConsistentWithParent: true,
@@ -198,10 +205,26 @@ const buildPanels = (classic: DashboardV1): DashboardV2Panels[] => {
                 coloringRules: null,
                 linkedDashboards: []
             };
-        } else {
+        } 
+        if (isTitleorTextPanel(panel.viewerType)) {
             return {
                 id: idx.toString(),
-                key: idx.toString(),
+                key: getKey(idx),
+                title: panel.name,
+                visualSettings: buildVisualSettings(panel),
+                keepVisualSettingsConsistentWithParent: true,
+                panelType: getPanelType(panel),
+                queries: [],
+                text: getPanelText(panel),
+                description: "",
+                coloringRules: null,
+                linkedDashboards: []
+            };
+        }
+        else {
+            return {
+                id: idx.toString(),
+                key: getKey(idx),
                 title: panel.name,
                 visualSettings: buildVisualSettings(panel),
                 keepVisualSettingsConsistentWithParent: true,
@@ -242,4 +265,23 @@ const convert = (classic: DashboardV1): DashboardV2 => {
 }
 
 export { convert, DashboardV1 }
+
+function isTitleorTextPanel(viewerType: String) {
+    return viewerType == "text" || viewerType == "title";
+}
+
+function getKey(idx: number): string {
+    return "panelPANE-" + idx.toString();
+}
+
+function getPanelText(panel: ClassicPanel): any | string | undefined {
+    try {
+        var text : String = JSON.parse(panel.properties.toString())["settings"]["text"]["configuration"]["text"]
+        text = text.replace(/\#\#\#/g, "").toString()
+        return text
+    }
+    catch {
+        return ""
+    }
+}
 
